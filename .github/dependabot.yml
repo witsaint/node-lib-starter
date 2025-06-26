@@ -1,0 +1,61 @@
+version: 2
+updates:
+  # Enable version updates for npm
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: UTC
+    open-pull-requests-limit: 10
+    reviewers:
+      - '@witsaint'
+    assignees:
+      - '@witsaint'
+    commit-message:
+      prefix: chore
+      prefix-development: chore
+      include: scope
+    labels:
+      - dependencies
+      - automated
+    ignore:
+      # Ignore major version updates for production dependencies
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']
+    groups:
+      development-dependencies:
+        dependency-type: development
+        patterns:
+          - '@types/*'
+          - 'eslint*'
+          - typescript
+          - 'vitest*'
+          - '@antfu/*'
+      build-dependencies:
+        patterns:
+          - unbuild
+          - bumpp
+          - tsx
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '09:00'
+      timezone: UTC
+    open-pull-requests-limit: 5
+    reviewers:
+      - '@witsaint'
+    assignees:
+      - '@witsaint'
+    commit-message:
+      prefix: ci
+      include: scope
+    labels:
+      - ci/cd
+      - github-actions
+      - automated

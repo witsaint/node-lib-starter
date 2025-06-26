@@ -1,0 +1,228 @@
+name: PR Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  pr-info:
+    name: PR Information
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: PR Size Analysis
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const additions = files.reduce((acc, file) => acc + file.additions, 0);
+            const deletions = files.reduce((acc, file) => acc + file.deletions, 0);
+            const changes = additions + deletions;
+
+            let size = 'XS';
+            let emoji = '🟢';
+
+            if (changes > 1000) {
+              size = 'XXL';
+              emoji = '🔴';
+            } else if (changes > 500) {
+              size = 'XL';
+              emoji = '🟠';
+            } else if (changes > 100) {
+              size = 'L';
+              emoji = '🟡';
+            } else if (changes > 30) {
+              size = 'M';
+              emoji = '🟡';
+            } else if (changes > 10) {
+              size = 'S';
+              emoji = '🟢';
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📊 PR Size Analysis
+
+              ${emoji} **Size**: ${size}
+              - **Files changed**: ${files.length}
+              - **Lines added**: ${additions}
+              - **Lines deleted**: ${deletions}
+              - **Total changes**: ${changes}
+
+              ${changes > 500 ? '⚠️ This PR is quite large. Consider breaking it into smaller PRs for easier review.' : '✅ This PR size looks good for review!'}
+              `
+            });
+
+  lint-pr:
+    name: Lint PR
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint only changed files
+        run: |
+          git fetch origin main:main
+          git diff --name-only main...HEAD | grep -E '\.(ts|js|tsx|jsx)$' | xargs -r pnpm eslint
+
+  test-coverage:
+    name: Test Coverage
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: pnpm run test -- --coverage
+
+      - name: Comment Coverage Report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            // Read coverage summary (assuming it's generated)
+            let coverageComment = '## 📊 Test Coverage Report\n\n';
+            coverageComment += '✅ Tests passed successfully!\n\n';
+            coverageComment += '*Detailed coverage report will be available when coverage reporting is configured.*';
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: coverageComment
+            });
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: moderate
+          allow-licenses: MIT, Apache-2.0, BSD-3-Clause, ISC, BSD-2-Clause
+
+  build-check:
+    name: Build Check
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Check build artifacts
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ Build artifacts not found"
+            exit 1
+          fi
+          echo "✅ Build artifacts generated successfully"
+
+  pr-labeler:
+    name: PR Labeler
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Label PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const labels = [];
+
+            // Add labels based on file changes
+            const hasTypeScript = files.some(file => file.filename.endsWith('.ts') || file.filename.endsWith('.tsx'));
+            const hasTests = files.some(file => file.filename.includes('test') || file.filename.includes('spec'));
+            const hasDocs = files.some(file => file.filename.endsWith('.md'));
+            const hasConfig = files.some(file => file.filename.includes('config') || file.filename.includes('.json'));
+            const hasWorkflow = files.some(file => file.filename.includes('.github/workflows'));
+
+            if (hasTypeScript) labels.push('typescript');
+            if (hasTests) labels.push('tests');
+            if (hasDocs) labels.push('documentation');
+            if (hasConfig) labels.push('configuration');
+            if (hasWorkflow) labels.push('ci/cd');
+
+            // Add size label
+            const changes = files.reduce((acc, file) => acc + file.additions + file.deletions, 0);
+            if (changes > 500) labels.push('size/xl');
+            else if (changes > 100) labels.push('size/l');
+            else if (changes > 30) labels.push('size/m');
+            else labels.push('size/s');
+
+            if (labels.length > 0) {
+              await github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: labels
+              });
+            }

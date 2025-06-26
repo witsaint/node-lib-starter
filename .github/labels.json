@@ -1,0 +1,127 @@
+[
+  {
+    "name": "bug",
+    "color": "d73a4a",
+    "description": "Something isn't working"
+  },
+  {
+    "name": "enhancement",
+    "color": "a2eeef",
+    "description": "New feature or request"
+  },
+  {
+    "name": "documentation",
+    "color": "0075ca",
+    "description": "Improvements or additions to documentation"
+  },
+  {
+    "name": "good first issue",
+    "color": "7057ff",
+    "description": "Good for newcomers"
+  },
+  {
+    "name": "help wanted",
+    "color": "008672",
+    "description": "Extra attention is needed"
+  },
+  {
+    "name": "invalid",
+    "color": "e4e669",
+    "description": "This doesn't seem right"
+  },
+  {
+    "name": "question",
+    "color": "d876e3",
+    "description": "Further information is requested"
+  },
+  {
+    "name": "wontfix",
+    "color": "ffffff",
+    "description": "This will not be worked on"
+  },
+  {
+    "name": "dependencies",
+    "color": "0366d6",
+    "description": "Pull requests that update a dependency file"
+  },
+  {
+    "name": "security",
+    "color": "b60205",
+    "description": "Security related issues"
+  },
+  {
+    "name": "automated",
+    "color": "ededed",
+    "description": "Created by automated tools"
+  },
+  {
+    "name": "ci/cd",
+    "color": "1d76db",
+    "description": "Continuous Integration and Deployment"
+  },
+  {
+    "name": "typescript",
+    "color": "007acc",
+    "description": "TypeScript related"
+  },
+  {
+    "name": "tests",
+    "color": "0e8a16",
+    "description": "Testing related"
+  },
+  {
+    "name": "configuration",
+    "color": "fbca04",
+    "description": "Configuration changes"
+  },
+  {
+    "name": "size/xs",
+    "color": "3cbf00",
+    "description": "Extra small PR"
+  },
+  {
+    "name": "size/s",
+    "color": "5d9801",
+    "description": "Small PR"
+  },
+  {
+    "name": "size/m",
+    "color": "a9a909",
+    "description": "Medium PR"
+  },
+  {
+    "name": "size/l",
+    "color": "e99695",
+    "description": "Large PR"
+  },
+  {
+    "name": "size/xl",
+    "color": "d93f0b",
+    "description": "Extra large PR"
+  },
+  {
+    "name": "needs-triage",
+    "color": "fef2c0",
+    "description": "Needs to be triaged"
+  },
+  {
+    "name": "high-priority",
+    "color": "b60205",
+    "description": "High priority issue"
+  },
+  {
+    "name": "maintenance",
+    "color": "fbca04",
+    "description": "Maintenance tasks"
+  },
+  {
+    "name": "github-actions",
+    "color": "2088ff",
+    "description": "GitHub Actions related"
+  },
+  {
+    "name": "docker",
+    "color": "384d54",
+    "description": "Docker related"
+  }
+]
