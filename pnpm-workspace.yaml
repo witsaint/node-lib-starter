@@ -11,7 +11,7 @@ catalogs:
     typescript: ^5.8.3
     unbuild: ^3.5.0
   testing:
-    vitest: ^3.1.2
+    vitest: ^3.2.4
     vitest-package-exports: ^0.1.1
   types:
     '@types/node': ^22.13.10
