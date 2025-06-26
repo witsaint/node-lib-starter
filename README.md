@@ -1,55 +1,221 @@
-# tcsk vscode common
+<div align="center">
 
-Provides the basic capabilities of the vs code extensions
+# 🎯 @wit
 
-### Webview
+**A modern TypeScript starter template for building VSCode extensions with LLM integration**
 
-Webview base class for flat web
+[![CI](https://github.com/witsaint/ts-starter/actions/workflows/ci.yml/badge.svg)](https://github.com/witsaint/ts-starter/actions/workflows/ci.yml)
+[![NPM Version](https://img.shields.io/npm/v/@wit)](https://www.npmjs.com/package/@wit)
+[![NPM Downloads](https://img.shields.io/npm/dm/@wit)](https://www.npmjs.com/package/@wit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 
-```ts
-import { FlatWebview } from '@tcsk-vscode/common';
+[📖 Documentation](./docs/CI-CD.md) • [🚀 Getting Started](#-getting-started) • [🛠️ Development](#️-development) • [🤝 Contributing](#-contributing)
 
-export class SomePanel extends FlatWebview {
-  private webviewPanel: WebviewPanel;
+</div>
+
+---
+
+## ✨ Features
+
+- 🔧 **TypeScript First** - Full TypeScript support with strict type checking
+- ⚡ **Fast Build** - Powered by [unbuild](https://github.com/unjs/unbuild) for lightning-fast builds
+- 🧪 **Testing Ready** - Pre-configured [Vitest](https://vitest.dev/) for unit testing
+- 📏 **Code Quality** - ESLint with [@antfu/eslint-config](https://github.com/antfu/eslint-config)
+- 🔄 **CI/CD** - Complete GitHub Actions workflows for testing, building, and publishing
+- 📦 **Modern Tooling** - PNPM, Git hooks, and automated dependency updates
+- 🎨 **VSCode Extension** - Designed for building VSCode extensions with LLM integration
+- 🔒 **Security** - Automated security scanning and dependency auditing
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (version 18 or higher)
+- [PNPM](https://pnpm.io/) (recommended package manager)
+
+### Installation
+
+```bash
+# Install via npm
+npm install @wit
+
+# Install via pnpm (recommended)
+pnpm add @wit
+
+# Install via yarn
+yarn add @wit
+```
+
+### Quick Start
+
+```typescript
+import { FlatWebview } from '@wit'
+
+export class MyExtensionPanel extends FlatWebview {
+  private webviewPanel: WebviewPanel
 
   get moduleName() {
-    return 'module';
+    return 'my-extension'
   }
 
   constructor() {
-    super();
+    super()
   }
-  // ...Implement abstract method
+
+  // Send a message to webview
+  sendMessage() {
+    this.sendAsyncMessage({
+      name: 'updateContent',
+      params: { message: 'Hello from extension!' },
+    })
+  }
+
+  // Send message and wait for response
+  async callWebview() {
+    const result = await this.sendAsyncCallBackMessage({
+      hash: 'unique-id',
+      params: { action: 'getData' },
+    })
+    return result
+  }
 }
 ```
 
-### PostMessage
+## 📖 API Reference
 
-The basic webview provides communication methods
+### FlatWebview
 
-You can use `this.sendAsyncMessage`
+Base class for creating VSCode webview panels with communication capabilities.
 
-The arguments is here
+#### Methods
 
-```ts
+| Method | Description | Parameters |
+|--------|-------------|------------|
+| `sendAsyncMessage` | Send one-way message to webview | `{ name: string, params: any }` |
+| `sendAsyncCallBackMessage` | Send message and wait for response | `{ hash: string, params: any }` |
+
+#### Abstract Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `moduleName` | `string` | Unique identifier for the webview module |
+
+## 🛠️ Development
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/witsaint/ts-starter.git
+cd ts-starter
+
+# Install dependencies
+pnpm install
+
+# Start development
+pnpm dev
+```
+
+### Available Scripts
+
+| Script | Description |
+|--------|-------------|
+| `pnpm dev` | Start development mode with file watching |
+| `pnpm build` | Build the project for production |
+| `pnpm test` | Run unit tests |
+| `pnpm test:watch` | Run tests in watch mode |
+| `pnpm lint` | Lint code with ESLint |
+| `pnpm typecheck` | Run TypeScript type checking |
+
+### Project Structure
+
+```
+ts-starter/
+├── src/              # Source code
+├── dist/             # Built files
+├── docs/             # Documentation
+├── .github/          # GitHub workflows and templates
+├── tests/            # Test files
+└── package.json      # Package configuration
+```
+
+## 🔧 Configuration
+
+### TypeScript
+
+The project uses strict TypeScript configuration. Customize settings in `tsconfig.json`:
+
+```json
 {
-  name: string; // The method you're going to call is in the webview
-  params: any; // The params for method
+  "compilerOptions": {
+    "strict": true,
+    "target": "ESNext",
+    "module": "ESNext"
+  }
 }
-
-this.sendAsyncMessage({
-  name: 'onChange',
-  params: text,
-});
 ```
 
-If it is a webview asynchronous call and wait for the return，You can use `this.sendAsyncCallBackMessage`
+### ESLint
 
-eg:
+Code style is enforced by ESLint with Anthony Fu's configuration:
 
-```ts
-this.sendAsyncCallBackMessage({
-  hash: 'xxx', // The webview will be passed when it is called
-  params: text,
-});
+```javascript
+// eslint.config.mjs
+import antfu from '@antfu/eslint-config'
+
+export default antfu()
 ```
+
+## 🚢 Deployment
+
+The project includes automated CI/CD workflows:
+
+- ✅ **Continuous Integration** - Automated testing on multiple platforms
+- 📦 **Automated Publishing** - Release to NPM on version tags
+- 🔒 **Security Scanning** - CodeQL and dependency auditing
+- 📱 **PR Checks** - Automated code review and size analysis
+
+To release a new version:
+
+```bash
+# Bump version and create tag
+pnpm bumpp
+
+# Or use GitHub Actions workflow for manual release
+```
+
+## 🤝 Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+### Development Workflow
+
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. 💻 Make your changes
+4. ✅ Run tests (`pnpm test`)
+5. 📝 Commit your changes (`git commit -m 'Add amazing feature'`)
+6. 🚀 Push to the branch (`git push origin feature/amazing-feature`)
+7. 🔄 Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the [MIT License](./LICENSE).
+
+## 🙏 Acknowledgments
+
+- [Anthony Fu](https://github.com/antfu) for the amazing ESLint config
+- [Vitest](https://vitest.dev/) team for the fast testing framework
+- [unbuild](https://github.com/unjs/unbuild) for the build system
+
+---
+
+<div align="center">
+
+**[⭐ Star this project](https://github.com/witsaint/ts-starter)** if you find it helpful!
+
+Made with ❤️ by [witsaint](https://github.com/witsaint)
+
+</div>
