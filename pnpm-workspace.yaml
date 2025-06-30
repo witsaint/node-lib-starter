@@ -3,11 +3,11 @@ packages:
 catalogs:
   cli:
     '@antfu/eslint-config': ^4.10.1
-    bumpp: ^10.1.0
+    bumpp: ^10.2.0
     eslint: ^9.25.1
     lint-staged: ^15.5.0
     simple-git-hooks: ^2.11.1
-    tsx: ^4.19.3
+    tsx: ^4.20.3
     typescript: ^5.8.3
     unbuild: ^3.5.0
   testing:
