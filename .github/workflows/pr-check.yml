@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: PR Size Analysis
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { data: files } = await github.rest.pulls.listFiles({
@@ -119,7 +119,7 @@ jobs:
         run: pnpm run test -- --coverage
 
       - name: Comment Coverage Report
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
@@ -187,7 +187,7 @@ jobs:
     if: github.event.pull_request.draft == false
     steps:
       - name: Label PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const { data: files } = await github.rest.pulls.listFiles({
