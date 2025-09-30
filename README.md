@@ -11,7 +11,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Vitest](https://img.shields.io/badge/Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 
-[📖 Documentation](./docs/CI-CD.md) • [🚀 Getting Started](#-getting-started) • [🛠️ Development](#️-development) • [🤝 Contributing](#-contributing)
+[📖 Documentation](./docs/CI-CD.md) • [🧪 Testing Guide](./docs/TESTING.md) • [🚀 Getting Started](#-getting-started) • [🛠️ Development](#️-development) • [🤝 Contributing](#-contributing)
 
 </div>
 
@@ -124,8 +124,14 @@ pnpm dev
 |--------|-------------|
 | `pnpm dev` | Start development mode with file watching |
 | `pnpm build` | Build the project for production |
-| `pnpm test` | Run unit tests |
+| `pnpm test` | Run all tests |
+| `pnpm test:coverage` | Run tests with coverage report |
 | `pnpm test:watch` | Run tests in watch mode |
+| `pnpm test:ui` | Open Vitest UI |
+| `pnpm test:type` | Run type tests only |
+| `pnpm test:performance` | Run performance tests only |
+| `pnpm test:integration` | Run integration tests only |
+| `pnpm test:e2e` | Run E2E tests only |
 | `pnpm lint` | Lint code with ESLint |
 | `pnpm typecheck` | Run TypeScript type checking |
 
@@ -138,6 +144,14 @@ ts-starter/
 ├── docs/             # Documentation
 ├── .github/          # GitHub workflows and templates
 ├── tests/            # Test files
+│   ├── unit/         # Unit tests
+│   ├── integration/  # Integration tests
+│   ├── e2e/          # End-to-end tests
+│   ├── performance/  # Performance tests
+│   ├── types/        # Type tests
+│   ├── utils/        # Test utilities
+│   └── fixtures/     # Test data
+├── scripts/          # Build and utility scripts
 └── package.json      # Package configuration
 ```
 
